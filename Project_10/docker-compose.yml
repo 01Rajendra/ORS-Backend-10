@@ -24,7 +24,7 @@ services:
 
     build:
 
-      context: ./Project_10
+      context: 
 
     ports:
 
