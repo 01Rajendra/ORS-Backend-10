@@ -50,7 +50,7 @@ services:
 
     image: mysql:8.0
 
-    container_name: mysql_p10
+    container_name: Docker
 
     environment:
 
