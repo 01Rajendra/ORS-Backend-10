@@ -115,9 +115,16 @@ public class LoginCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 			res.addResult("token", token);
 			return res;
 
-		}
+		
+  } catch (Exception e) {
+
+			e.printStackTrace(); // backend log ke liye
+
+			res.setSuccess(false);
+			res.addMessage("Server is down. Please try again later.");
 
 		return res;
+	}
 	}
 
 	/**
