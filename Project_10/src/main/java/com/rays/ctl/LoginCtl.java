@@ -78,54 +78,52 @@ public class LoginCtl extends BaseCtl<UserForm, UserDTO, UserServiceInt> {
 	}
 
 	@PostMapping("login")
-	public ORSResponse login(@RequestBody @Valid LoginForm form, BindingResult bindingResult, HttpSession session,
-			HttpServletRequest request) throws Exception {
-		System.out.println("loginCtl ki login API ko hit kiya");
-		ORSResponse res = validate(bindingResult);
+public ORSResponse login(@RequestBody @Valid LoginForm form, BindingResult bindingResult,
+        HttpSession session, HttpServletRequest request) {
 
-		if (!res.isSuccess()) {
-			return res;
-		}
+    System.out.println("loginCtl ki login API ko hit kiya");
+    ORSResponse res = validate(bindingResult);
 
-		UserDTO dto = baseService.authenticate(form.getLoginId(), form.getPassword());
-		if (dto == null) {
-			System.out.println("dto == null ");
-			res.setSuccess(false);
-			res.addMessage("Invalid ID or Password");
-		} else {
-			UserContext context = new UserContext(dto);
+    if (!res.isSuccess()) {
+        return res;
+    }
 
-//			 session.setAttribute("userContext", context); 				
+    try {
+        UserDTO dto = baseService.authenticate(form.getLoginId(), form.getPassword());
 
-			session.setAttribute("test", dto.getFirstName());
+        if (dto == null) {
+            System.out.println("dto == null ");
+            res.setSuccess(false);
+            res.addMessage("Invalid ID or Password");
+            return res;
+        }
 
-			res.setSuccess(true);
-			res.addData(dto);
-			res.addResult("jsessionid", session.getId());
-			res.addResult("loginId", dto.getLoginId());
-			res.addResult("role", dto.getRoleName());
-			res.addResult("fname", dto.getFirstName());
-			res.addResult("lname", dto.getLastName());
+        UserContext context = new UserContext(dto);
+        session.setAttribute("test", dto.getFirstName());
 
-			/* System.out.println("jsessionid " + session.getId()); */
-			System.out.println("Before calling userDetail authenticate");
+        res.setSuccess(true);
+        res.addData(dto);
+        res.addResult("jsessionid", session.getId());
+        res.addResult("loginId", dto.getLoginId());
+        res.addResult("role", dto.getRoleName());
+        res.addResult("fname", dto.getFirstName());
+        res.addResult("lname", dto.getLastName());
 
-			final String token = jwtUtil.generateToken(dto.getLoginId());
+        final String token = jwtUtil.generateToken(dto.getLoginId());
+        res.addResult("token", token);
 
-			res.addResult("token", token);
-			return res;
+        return res;
 
-		
-  } catch (Exception e) {
+    } catch (Exception e) {
 
-			e.printStackTrace(); // backend log ke liye
+        e.printStackTrace(); // backend log
 
-			res.setSuccess(false);
-			res.addMessage("Server is down. Please try again later.");
+        res.setSuccess(false);
+        res.addMessage("Server is down. Please try again later.");
+        return res;
+    }
+}
 
-		return res;
-	}
-	}
 
 	/**
 	 * Emails password to user
