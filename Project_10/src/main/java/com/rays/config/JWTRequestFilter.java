@@ -76,7 +76,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 				response.setContentType("application/json");
 
 				response.getWriter().write(
-						"{\"success\":false,\"message\":[\"Token is invalid or expired. Please login again.\"]}");
+						"{\"success\":false,\"message\":[\"Token is invalid or exp  ired. Please login again.\"]}");
 				return;
 			}
 
